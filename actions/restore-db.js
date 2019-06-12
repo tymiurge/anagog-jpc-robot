@@ -12,9 +12,12 @@ exports.restoreDb = async (folderPath) => {
       console.log(`${Name} application added/restored`);
       const configFilesFolderPath = `${appFolderPath}/configs`
       const configFiles = fs.readdirSync(configFilesFolderPath).filter(f => !fs.statSync(join(configFilesFolderPath, f)).isDirectory());
+      
       for(let configFile of configFiles) {
         const config = JSON.parse(fs.readFileSync(`${configFilesFolderPath}/${configFile}`))
         await service.uploadConfig(Name, config)
+      }
+      if (configFiles.length > 0) {
         console.log(`${configFiles} configs have been uploaded to the ${Name} application.`)
       }
     }
