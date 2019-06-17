@@ -9,6 +9,7 @@ const { clearDB } = require('./actions/clear-db');
 const { addManyApplication } = require('./actions/add-many-apps');
 const { restoreDb } = require('./actions/restore-db');
 const { checkHeath } = require('./actions/check-health');
+const { setBaseUrl, report } = require('./actions/set-config');
 
 const dumpCommandDescription =                                                           
 `
@@ -74,7 +75,7 @@ program
   );
 
 program
-  .command('restore <folderPath')
+  .command('restore <folderPath>')
   .alias('rdb')
   .description('adds all applications from the folder path and uploads all configs; the structure of folder should be like in dump - see dump command description.')
   .action(restoreDb);
@@ -83,7 +84,20 @@ program
   .command('reportHeath')
   .alias('rh')
   .description('outputs statuses of all services.')
-  .action(checkHeath)
+  .action(checkHeath);
+
+program
+  .command('config')
+  .alias('c')
+  .option('-b, --base_url <base_url>', 'if specified, the program will set up base url of API server in the config.')
+  .option('-s, --silent', 'if set, no report on config state is outputed to the console.')
+  .description('reads and modifies the robot config.')
+  .action(
+    options => {
+      if (options.base_url) { setBaseUrl(options.base_url) }
+      if (!options.silent) { report() };
+    }
+  );
    
 program.parse(process.argv);
 

@@ -1,5 +1,5 @@
-// const BaseService = require('./base-service');
 const axios = require('axios');
+const endpoints =  require('./endpoints');
 
 class ApplicationService {
 

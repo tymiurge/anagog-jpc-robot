@@ -1,7 +1,6 @@
 const service = require('./../api/service');
 const fs = require('fs');
 const rimraf = require("rimraf");
-// const fsPromises = fs.promises;
 
 exports.dumpApps = async (folderPath) => {
 	try {
@@ -14,7 +13,6 @@ exports.dumpApps = async (folderPath) => {
     for (let app of apps) {
       const appName = app.Name;
       fs.mkdirSync(`${folderPath}/${appName}`);
-      // await fsPromises.writeFile(`${folderPath}/${appName}/${appName}.json`, JSON.stringify(app));
       fs.writeFileSync(`${folderPath}/${appName}/appDetails.json`, JSON.stringify(app));
       const configsFolderPath = `${folderPath}/${appName}/configs`
       fs.mkdirSync(configsFolderPath);
