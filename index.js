@@ -10,6 +10,7 @@ const { addManyApplication } = require('./actions/add-many-apps');
 const { restoreDb } = require('./actions/restore-db');
 const { checkHeath } = require('./actions/check-health');
 const { setBaseUrl, report } = require('./actions/set-config');
+const { appsList } = require('./actions/list-apps');
 
 const dumpCommandDescription =                                                           
 `
@@ -39,7 +40,7 @@ program
   .action(addOneApplication);
 
 program
-  .command('addManyApplications <fileName')
+  .command('addManyApplications <fileName>')
   .alias('am')
   .description('Adds all applications specified in the file name json file.')
   .action(addManyApplication);
@@ -51,7 +52,7 @@ program
   .action(deleteApplication);
 
 program
-  .command('uploadConfig <appDetailsFileName> <appConfigFileName')
+  .command('uploadConfig <appDetailsFileName> <appConfigFileName>')
   .alias('uc')
   .description('Uploads appliation configuration.')
   .action(uploadApplicationConfig);
@@ -97,6 +98,15 @@ program
       if (options.base_url) { setBaseUrl(options.base_url) }
       if (!options.silent) { report() };
     }
+  );
+
+program
+  .command('list')
+  .alias('ls')
+  .option('-f, --filter <filter>', 'if set, only applications containing filter substring in their name will be outputted')
+  .description('Outputs all apps into console.')
+  .action( 
+    options => appsList(options.filter)
   );
    
 program.parse(process.argv);

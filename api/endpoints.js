@@ -1,8 +1,8 @@
 module.exports = {
-  add: (appName, appKey) => `config/manage/add-app/jedaisdk/${appName}/${appKey}`,
-  delete: appName => `config/manage/delete-app/jedaisdk/${appName}`,
-  list: () => `config/manage/list/jedaisdk`,
-  upload: appName => `config/manage/upload/jedaisdk/${appName}`,
-  download: appName => `config/manage/download/jedaisdk/${appName}`,
-  status: () => 'config/manage/health'
+  add: (appName, appKey) => `add-app/jedaisdk/${appName}/${appKey}`,
+  delete: appName => `delete-app/jedaisdk/${appName}`,
+  list: () => `list/jedaisdk`,
+  upload: appName => `upload/jedaisdk/${appName}`,
+  download: appName => `download/jedaisdk/${appName}`,
+  status: () => 'health'
  }

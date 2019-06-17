@@ -1,44 +1,54 @@
 const axios = require('axios');
+const fs = require('fs');
+const { CONFIG_FILE_PATH } = require('./../vars');
 const endpoints =  require('./endpoints');
 
 class ApplicationService {
 
   constructor() {
-    this.baseUrl = 'https://dev-api-jedai.anagog.com/jpc-server';
+    try {
+      this.baseUrl = JSON.parse(fs.readFileSync( CONFIG_FILE_PATH )).baseUrl;
+    } catch(e) {
+      console.error(e);
+    }
     this.requestConfig = {
       headers: {
-        'content-type': 'application/json;charset=UTF-8',
-        'accept': 'application/json, text/plain, */*',
-        'cookie': '_ga=GA1.2.1104494379.1559510934; _fbp=fb.1.1559510934474.1759205429; SESSID=s%3AnKpIR39NnCHHPXxlm_WGhwME9Dj17Ir_.265aDMXgO5sUHRSX0O68adHM%2FxmHZ2e6sGTkETmgEEs'
+        'content-type': 'application/json',
       },
       validateStatus: function (status) {
         return (status >= 200 && status < 300) || status === 412; 
       },
     };
   }
+  _reportError(error) {
+    console.log(error.message);
+    console.info(error)
+  }
 
   add(appName, appKey) {
-    return axios.post(`${this.baseUrl}/apps`, {APIKey: appKey, AppName: appName}, this.requestConfig);
+    return axios.post(`${this.baseUrl}/${endpoints.add(appName, appKey)}`, {}, this.requestConfig);
   }
 
   deleteApp(appName) {
-    return axios.delete(`${this.baseUrl}/apps/${appName}`, this.requestConfig);
+    return axios.post(`${this.baseUrl}/${endpoints.delete(appName)}`, {}, this.requestConfig);
   };
 
-  uploadConfig(appName, appConfig) {
-    return axios.post(`${this.baseUrl}/apps/${appName}/upload`, appConfig, this.requestConfig)
+  getApps() {
+    return axios.get(`${this.baseUrl}/${endpoints.list()}`, this.requestConfig)
+      .then(response => response.data.Apps)
+      .catch( this._reportError )
   }
 
-  getApps() {
-    return axios.get(`${this.baseUrl}/apps`, this.requestConfig)
+  uploadConfig(appName, appConfig) {
+    return axios.post(`${this.baseUrl}/${endpoints.upload(appName)}`, appConfig, this.requestConfig)
   }
 
   downloadAppConfig(appName) {
-    return axios.get(`${this.baseUrl}/apps/${appName}/download`, this.requestConfig)
+    return axios.get(`${this.baseUrl}/${endpoints.download(appName)}`, this.requestConfig)
   }
 
   getHealth() {
-    return axios.get(`${this.baseUrl}/health`, this.requestConfig)
+    return axios.get(`${this.baseUrl}/${endpoints.status()}`, this.requestConfig)
   }
 }
 

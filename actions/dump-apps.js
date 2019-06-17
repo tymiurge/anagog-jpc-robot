@@ -8,8 +8,8 @@ exports.dumpApps = async (folderPath) => {
       rimraf.sync(folderPath);
     }
     fs.mkdirSync(folderPath);
-    const response = await service.getApps();
-    const apps = response.data.data
+    const apps = await service.getApps();
+    // const apps = await response.data.data
     for (let app of apps) {
       const appName = app.Name;
       fs.mkdirSync(`${folderPath}/${appName}`);
@@ -18,7 +18,7 @@ exports.dumpApps = async (folderPath) => {
       fs.mkdirSync(configsFolderPath);
       const downloadResponse = await service.downloadAppConfig(appName);
       if (downloadResponse.status === 200 ) {
-        const appConfig = downloadResponse.data.data.Data;
+        const appConfig = downloadResponse.data;
         fs.writeFileSync(`${configsFolderPath}/config.json`, JSON.stringify(appConfig));
       } else if(downloadResponse.status === 412) {
         console.warn(`WARNING: ${appName} has no config`);  
